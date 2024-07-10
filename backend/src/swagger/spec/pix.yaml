@@ -1,0 +1,131 @@
+openapi: 3.0.0
+info:
+  title: API de Pix - Virtus Bank
+  description: Gerencia as operações de Pix.
+  version: 1.0.0
+
+servers: 
+  - url: "/api/virtusbank"
+
+paths:
+  /pix/request:
+    post:
+      tags:
+        - Pix
+      summary: Solicita um pagamento PIX
+      description: Cria uma nova solicitação de pagamento PIX.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: number
+                  description: Valor da solicitação de pagamento PIX
+      responses:
+        200:
+          description: Solicitação de pagamento PIX criada com sucesso. Retorna a chave PIX.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  copyPasteKey:
+                    type: string
+                    description: Chave PIX para ser utilizada no pagamento
+        400:
+          description: Requisição inválida.
+        500:
+          description: Erro interno do servidor.
+
+  /pix/pay/{key}:
+    post:
+      tags:
+        - Pix
+      summary: Paga uma solicitação PIX
+      description: Realiza o pagamento de uma solicitação PIX utilizando a chave PIX.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: key
+          schema:
+            type: string
+          required: true
+          description: Chave PIX da solicitação a ser paga
+      responses:
+        201:
+          description: Pagamento PIX realizado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    description: Mensagem de confirmação do pagamento
+        400:
+          description: Requisição inválida ou chave PIX inválida.
+        401:
+          description: Saldo insuficiente ou chave PIX do próprio usuário.
+        500:
+          description: Erro interno do servidor.
+
+  /pix/transactions:
+    get:
+      tags:
+        - Pix
+      summary: Obtém o histórico de transações PIX
+      description: Retorna o histórico de transações PIX do usuário autenticado.
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Histórico de transações PIX retornado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+        500:
+          description: Erro interno do servidor.
+
+components:
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        value:
+          type: number
+          description: Valor da transação
+        user:
+          type: object
+          properties:
+            firstName:
+              type: string
+              description: Primeiro nome do usuário envolvido na transação
+            lastName:
+              type: string
+              description: Sobrenome do usuário envolvido na transação
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data e hora da última atualização da transação
+        type:
+          type: string
+          enum: [received, paid]
+          description: Tipo da transação (recebida ou paga)
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

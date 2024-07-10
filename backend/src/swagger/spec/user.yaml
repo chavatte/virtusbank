@@ -1,0 +1,126 @@
+openapi: 3.0.0
+info:
+  title: API de Usuários - Virtus Bank
+  description: Gerencia o cadastro, login e informações dos usuários.
+  version: 1.0.0
+
+paths:
+  /user/signin:
+    post:
+      tags:
+        - Autenticação
+      summary: Login do usuário
+      description: Realiza o login do usuário e retorna um token de acesso (JWT).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Endereço de e-mail do usuário
+                password:
+                  type: string
+                  format: password
+                  description: Senha do usuário
+      responses:
+        200:
+          description: Login bem-sucedido. Retorna um token de acesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: Token de acesso JWT
+        401:
+          description: Credenciais inválidas.
+        500:
+          description: Erro interno do servidor.
+
+  /user/signup:
+    post:
+      tags:
+        - Autenticação
+      summary: Cadastro de novo usuário
+      description: Cadastra um novo usuário no sistema.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        200:
+          description: Usuário cadastrado com sucesso. Retorna um token de acesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: Token de acesso JWT
+        401:
+          description: Email já cadastrado.
+        500:
+          description: Erro interno do servidor.
+
+  /user/me:
+    get:
+      tags:
+        - Usuário
+      summary: Obter informações do usuário autenticado
+      description: Retorna as informações do usuário que está autenticado no sistema.
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: Informações do usuário retornadas com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        401:
+          description: Usuário não autenticado.
+        500:
+          description: Erro interno do servidor.
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID do usuário
+        firstName:
+          type: string
+          description: Primeiro nome do usuário
+        lastName:
+          type: string
+          description: Sobrenome do usuário
+        email:
+          type: string
+          format: email
+          description: Endereço de e-mail do usuário
+        accountNumber:
+          type: integer
+          description: Número da conta do usuário
+        accountDigit:
+          type: integer
+          description: Dígito da conta do usuário
+        wallet:
+          type: number
+          description: Saldo da carteira do usuário
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

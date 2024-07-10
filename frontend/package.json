@@ -1,0 +1,47 @@
+{
+  "name": "frontend-virtus-bank",
+  "description": "Interface do usuário para o Virtus Bank, uma aplicação de gerenciamento financeiro construída com React.",
+  "author": "João Carlos Chavatte",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^1.7.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.24.1",
+    "react-scripts": "^5.0.1",
+    "reactjs-popup": "^2.0.6",
+    "styled-components": "^6.1.11",
+    "web-vitals": "^4.2.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "eslint": "^9.6.0",
+    "eslint-config-react-app": "^7.0.1",
+    "prettier": "^3.3.2"
+  }
+}
